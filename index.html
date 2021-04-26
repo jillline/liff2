@@ -45,12 +45,92 @@
   <script src="https://static.line-scdn.net/liff/edge/versions/2.9.0/sdk.js"></script>
   <script>
     function createUniversalLink() {
+      const link1 = liff.permanentLink.createUrl()
+      document.getElementById("universalLink1").append(link1)
+
+      liff.permanentLink.setExtraQueryParam('param=9')
+      const link2 = liff.permanentLink.createUrl()
+      d.getElementById("universalLink2").append(link2)
     }
 
     async function shareMsg() {
+      await liff.shareTargetPicker([
+        {
+          "type": "text",
+          "text": "this message was send by sharetargetpicker"
+        }
+        {
+  "type": "bubble",
+  "size": "giga",
+  "body": {
+    "type": "box",
+    "layout": "vertical",
+    "contents": [
+      {
+        "type": "image",
+        "url": "https://drive.google.com/uc?id=1PxPYW1L-5zgFPHPzk07_Gqm1aigCLMIn",
+        "size": "full",
+        "aspectMode": "cover",
+        "aspectRatio": "1:1",
+        "position": "relative"
+      },
+      {
+        "type": "box",
+        "layout": "vertical",
+        "contents": [],
+        "position": "absolute",
+        "background": {
+          "type": "linearGradient",
+          "angle": "0deg",
+          "endColor": "#00000000",
+          "startColor": "#00000099"
+        },
+        "width": "100%",
+        "height": "40%",
+        "offsetBottom": "0px",
+        "offsetStart": "0px",
+        "offsetEnd": "0px"
+      },
+      {
+        "type": "box",
+        "layout": "horizontal",
+        "contents": [
+          {
+            "type": "box",
+            "layout": "vertical",
+            "contents": [
+              {
+                "type": "box",
+                "layout": "horizontal",
+                "contents": [
+                  {
+                    "type": "text",
+                    "text": "ธรรมาภิสมัย",
+                    "size": "xl",
+                    "color": "#ffffff"
+                  }
+                ]
+              }
+            ],
+            "spacing": "xs"
+          }
+        ],
+        "position": "absolute",
+        "offsetBottom": "0px",
+        "offsetStart": "0px",
+        "offsetEnd": "0px",
+        "paddingAll": "20px"
+      }
+    ],
+    "paddingAll": "0px"
+  }
+}
+      ])
     }
 
     function logOut() {
+      liff.logout()
+      window.location.reload()
     }
 
     function closed() {
@@ -90,18 +170,23 @@
       } else {
         document.getElementById("btnMsg").style.display = "none"
         document.getElementById("btnScanCode").style.display = "none"
-        document.getElementById("btnClose").style.display ="none"
+        document.getElementById("btnClose").style.display = "none"
       }
 
     }
 
     async function main() {
            await liff.init({ liffId: "1655706043-j6ma03nK" })
-      getEnvironment()
+           document.getElementById("isLoggedIn").append(liff.isLoggedIn())
+           if(liff.isLoggedIn()) {
+           getEnvironment()
       getUserProfile()
       // getContext()
       // getFriendship()
       // createUniversalLink()
+           } else {
+             liff.login()
+           }
     }
     main()
   </script>
