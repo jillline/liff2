@@ -1,10 +1,9 @@
-<!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0,viewport-fit=cover">
-  <title>My LIFF app</title>
-  <link rel="stylesheet" href="css/style.css" media="all">
+  <title>My LIFF App</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
   <p id="os"><b>OS:</b> </p>
@@ -36,11 +35,11 @@
   <button id="btnLogOut" onclick="logOut()">Log Out</button>
   <button id="btnClose" onclick="closed()">Close</button>
 
-  <!-- <script src="js/vconsole.min.js"></script> -->
-  <!-- <script>
+  <script src="js/vconsole.min.js"></script>
+  <script>
     var vConsole = new VConsole()
     console.log("Hello World!")
-  </script> -->
+  </script>
 
   <script src="https://static.line-scdn.net/liff/edge/versions/2.9.0/sdk.js"></script>
   <script>
@@ -50,29 +49,32 @@
 
       liff.permanentLink.setExtraQueryParam('param=9')
       const link2 = liff.permanentLink.createUrl()
-      d.getElementById("universalLink2").append(link2)
+      document.getElementById("universalLink2").append(link2)
     }
 
     async function shareMsg() {
       await liff.shareTargetPicker([
         {
-          "type": "text",
-          "text": "this message was send by sharetargetpicker"
+          type: "text",
+          text: "This message was sent by ShareTargetPicker"
         }
         {
+          type: "text",
+          altText: "flex message was sent by ShareTargetPicker",
+          contents : {
   "type": "bubble",
   "size": "giga",
   "body": {
     "type": "box",
-    "layout": "vertical",
+    "layout": "horizontal",
     "contents": [
       {
         "type": "image",
-        "url": "https://drive.google.com/uc?id=1PxPYW1L-5zgFPHPzk07_Gqm1aigCLMIn",
+        "url": "https://drive.google.com/uc?id=1pBXP4ISfbyNoIejAaAm96cl85YeIXYw6",
         "size": "full",
         "aspectMode": "cover",
         "aspectRatio": "1:1",
-        "position": "relative"
+        "gravity": "center"
       },
       {
         "type": "box",
@@ -101,15 +103,21 @@
             "contents": [
               {
                 "type": "box",
-                "layout": "horizontal",
+                "layout": "baseline",
                 "contents": [
                   {
                     "type": "text",
-                    "text": "ธรรมาภิสมัย",
-                    "size": "xl",
-                    "color": "#ffffff"
+                    "text": "ธรรม",
+                    "color": "#a9a9a9",
+                    "size": "xxl"
                   }
-                ]
+                ],
+                "spacing": "xs"
+              },
+              {
+                "type": "box",
+                "layout": "horizontal",
+                "contents": []
               }
             ],
             "spacing": "xs"
@@ -122,9 +130,18 @@
         "paddingAll": "20px"
       }
     ],
-    "paddingAll": "0px"
+    "paddingAll": "0px",
+    "position": "relative"
+  },
+  "action": {
+    "type": "postback",
+    "label": "action",
+    "data": "hello",
+    "displayText": "*สิ่งที่จะดำรงพระพุทธศาสนาได้ตามความเป็นจริงก็คือ ความเข้าใจพระธรรมวินัยอย่างถูกต้อง และการน้อมประพฤติปฏิบัติตาม ด้วยความเคารพอย่างยิ่งในพระรัตนตรัย  *ดังนั้น หนทางเดียวที่จะดำรงพระพุทธศาสนาได้ก็คือ การฟังพระธรรม สนทนาธรรม เพื่อเข้าใจถูกต้องในความเป็นธรรม และเผยแพร่ความถูกต้องตามพระธรรมวินัยแก่ผู้ที่สนใจ"
   }
 }
+
+        }
       ])
     }
 
@@ -134,21 +151,52 @@
     }
 
     function closed() {
+      liff.closeWindow()
     }
 
     async function scanCode() {
+      const result = await liff.scanCode()
+      document.getElementById("scanCode").append(result.value)
     }
-
+    
     function openWindow() {
+      liff.openWindow({
+        url: "https://line.me",
+        external: true
+      })
     }
 
     async function getFriendship() {
+      const friend = await liff.getFriendship()
+      document.getElementById("friendship").append(friend.friendFlag)
+      if (!friend.friendFlag) {
+        if (confirm("คุณยังไม่ได้เพิ่ม Bot เป็นเพื่อน จะเพิ่มเลยไหม?")) {
+          window.location = "https://line.me/R/ti/p/@rpr6457w"//น้องดอกบัว
+        }
+      }
     }
 
     async function sendMsg() {
+      if (liff.getContext().type !== "none") {
+        await liff.sendMessages([
+          {
+            "type": "sticker",
+            "stickerId": 1,
+            "packageId": 1
+          }
+        ])
+        alert("Message sent")
+      }
     }
 
     function getContext() {
+      if (liff.getContext() != null) {
+        document.getElementById("type").append(liff.getContext().type)
+        document.getElementById("viewType").append(liff.getContext().viewType)
+        document.getElementById("utouId").append(liff.getContext().utouId)
+        document.getElementById("roomId").append(liff.getContext().roomId)
+        document.getElementById("groupId").append(liff.getContext().groupId)
+      }
     }
 
     async function getUserProfile() {
@@ -157,36 +205,38 @@
       document.getElementById("userId").append(profile.userId)
       document.getElementById("statusMessage").append(profile.statusMessage)
       document.getElementById("displayName").append(profile.displayName)
+      document.getElementById("decodedIDToken").append(liff.getDecodedIDToken().email)
     }
-
+    
     function getEnvironment() {
       document.getElementById("os").append(liff.getOS())
       document.getElementById("language").append(liff.getLanguage())
       document.getElementById("version").append(liff.getVersion())
       document.getElementById("accessToken").append(liff.getAccessToken())
       document.getElementById("isInClient").append(liff.isInClient())
-      if (liff,isInClient()) {
+      if (liff.isInClient()) {
         document.getElementById("btnLogOut").style.display = "none"
       } else {
         document.getElementById("btnMsg").style.display = "none"
         document.getElementById("btnScanCode").style.display = "none"
         document.getElementById("btnClose").style.display = "none"
       }
-
     }
 
     async function main() {
-           await liff.init({ liffId: "1655706043-j6ma03nK" })
-           document.getElementById("isLoggedIn").append(liff.isLoggedIn())
-           if(liff.isLoggedIn()) {
-           getEnvironment()
-      getUserProfile()
-      // getContext()
-      // getFriendship()
-      // createUniversalLink()
-           } else {
-             liff.login()
-           }
+      liff.ready.then(() => {
+        document.getElementById("isLoggedIn").append(liff.isLoggedIn())
+        if (liff.isLoggedIn()) {
+          getEnvironment()
+          getUserProfile()
+          getContext()
+          getFriendship()
+          createUniversalLink()
+        } else {
+          liff.login()
+        }
+      })
+      await liff.init({ liffId: "1655706043-j6ma03nK" })
     }
     main()
   </script>
